@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>検索フォーム</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+
+<body>
+    <form id="readForm">
+        <button type="submit">入退場者記録を表示・更新</button>
+    </form>
+    <form id="entranceForm">
+        <input type="text" id="entranceInput" placeholder="会員番号を入力してください">
+        <!-- <input type="text" id="entranceAreaInput" placeholder="利用エリアを入力してください"> -->
+        <select id="entranceAreaInput">
+            <option value="ビギナー">ビギナー</option>
+            <option value="コンペ">コンペ</option>
+            <option value="リード">リード</option>
+            <option value="スピード">スピード</option>
+        </select>
+        <button type="submit">入場者を記録</button>
+    </form>
+    <form id="exitForm">
+        <input type="text" id="exitInput" placeholder="会員番号を入力してください">
+        <button type="submit">退場者を記録</button>
+    </form>
+
+    <div id="tableContainer"></div>
+    <script src="js/client.js"></script>
+</body>
+
+</html>
