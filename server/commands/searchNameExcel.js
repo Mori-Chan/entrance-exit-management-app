@@ -45,6 +45,9 @@ const searchNameExcel = async (excelPath, number) => {
             }
         });
     });
+    if ( listName === undefined ) {
+        listName = '';
+    }
     return listName;
 };
 

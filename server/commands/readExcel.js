@@ -60,9 +60,24 @@ const readExcel = async (excelPath, listPath, sheetName) => {
     });
 
     let html = '<table>';
+    let nowColumn;
     let nameColumn;
     let numberColumn;
     let number;
+
+    let beginnerColumn;
+    let compeColumn;
+    let leadColumn;
+    let speedColumn;
+    let disabledColumn;
+    let caregiverColumn;
+
+    let beginnerCount = 0;
+    let compeCount = 0;
+    let leadCount = 0;
+    let speedCount = 0;
+    let disabledCount = 0;
+    let caregiverCount = 0;
 
     for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
         const row = rows[rowIndex];
@@ -71,13 +86,41 @@ const readExcel = async (excelPath, listPath, sheetName) => {
 
         for (let colIndex = 0; colIndex < row.length; colIndex++) {
             const cell = row[colIndex];
+            nowColumn = worksheet.getColumn(colIndex + 1).letter;
             const value = cell.value !== null ? cell.value.toString() : '';
             if ( cell.value === '氏名' ) {
-                nameColumn = worksheet.getColumn(colIndex + 1).letter;
+                nameColumn = nowColumn;
             } else if ( cell.value === 'No.' ) {
-                numberColumn = worksheet.getColumn(colIndex + 1).letter;
+                numberColumn = nowColumn;
+            } else if ( cell.value === 'ビギナー' ) {
+                beginnerColumn = nowColumn;
+            } else if ( cell.value === 'コンペ' ) {
+                compeColumn = nowColumn;
+            } else if ( cell.value === 'リード' ) {
+                leadColumn = nowColumn;
+            } else if ( cell.value === 'スピード' ) {
+                speedColumn = nowColumn;
+            } else if ( cell.value === '手帳' ) {
+                disabledColumn = nowColumn;
+            } else if ( cell.value === '介助者' ) {
+                caregiverColumn = nowColumn;
             }
-            if ( ( cell.value === '' || cell.value === null ) && worksheet.getColumn(colIndex + 1).letter === nameColumn && !(isNaN(worksheet.getCell(`${ numberColumn }${ rowIndex + 1 }`).value)) && worksheet.getCell(`${ numberColumn }${ rowIndex + 1 }`).value !== null ) {
+            if ( !( cell.value === '' || cell.value === null ) && !( cell.value === '入退場者記録' ) && !( cell.value === 'ボルダー' ) && !( cell.value === 'ビギナー' ) && !( cell.value === 'コンペ' ) && !( cell.value === 'リード' ) && !( cell.value === 'スピード' ) && !( cell.value === '手帳' ) && !( cell.value === '介助者' ) ) {
+                if ( nowColumn === beginnerColumn ) {
+                    beginnerCount += 1;
+                } else if ( nowColumn === compeColumn ) {
+                    compeCount += 1;
+                } else if ( nowColumn === leadColumn ) {
+                    leadCount += 1;
+                } else if ( nowColumn === speedColumn ) {
+                    speedCount += 1;
+                } else if ( nowColumn === disabledColumn ) {
+                    disabledCount += 1;
+                } else if ( nowColumn === caregiverColumn ) {
+                    caregiverCount += 1;
+                }
+            }
+            if ( ( cell.value === '' || cell.value === null ) && nowColumn === nameColumn && !(isNaN(worksheet.getCell(`${ numberColumn }${ rowIndex + 1 }`).value)) && worksheet.getCell(`${ numberColumn }${ rowIndex + 1 }`).value !== null ) {
                 number = worksheet.getCell(`${ numberColumn }${ rowIndex + 1 }`).value;
                 const searchValue = await searchNameExcel( listPath, number );
                 confhtml += `<td>${ searchValue }</td>`;
@@ -89,7 +132,7 @@ const readExcel = async (excelPath, listPath, sheetName) => {
             } else {
                 if (cell.isMerged && (cell.value === '入退場者記録' || cell.value === 'ボルダー')) {
                     if (cell.value === '入退場者記録') {
-                        confhtml += `<td colspan="3" class="mergedCell">${value}</td>`;
+                        confhtml += `<td colspan="10" class="mergedCell">${value}</td>`;
                     } else if (cell.value === 'ボルダー') {
                         confhtml += `<td colspan="2" class="mergedCell">${value}</td>`;
                     }
@@ -111,7 +154,18 @@ const readExcel = async (excelPath, listPath, sheetName) => {
     }
 
     html += '</table>';
-    return html;
+
+    const jsonData = {
+        html: html,
+        beginner: beginnerCount,
+        compe: compeCount,
+        lead: leadCount,
+        speed: speedCount,
+        disabled: disabledCount,
+        caregiver: caregiverCount,
+    };
+
+    return JSON.stringify(jsonData);
 };
 
 module.exports = readExcel;

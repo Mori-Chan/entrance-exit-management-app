@@ -1,7 +1,7 @@
 const ExcelJS = require('exceljs');
 const path = require('path');
 
-const inputEntranceExcel = async (excelPath, sheetName, number, area) => {
+const inputEntranceExcel = async ( excelPath, sheetName, number, area, disabled, caregiver, card ) => {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(excelPath);
     const worksheet = workbook.getWorksheet(sheetName);
@@ -13,6 +13,9 @@ const inputEntranceExcel = async (excelPath, sheetName, number, area) => {
     let entranceTimeColumn;
     let numberColumn;
     let areaColumn;
+    let disabledColumn;
+    let caregiverColumn;
+    let cardColumn;
     const rows = [];
 
     worksheet.eachRow({ includeEmpty: true }, (row) => {
@@ -42,6 +45,15 @@ const inputEntranceExcel = async (excelPath, sheetName, number, area) => {
             if ( cell.value === area ) {
                 areaColumn = worksheet.getColumn(colIndex + 1).letter;
             }
+            if ( cell.value === '手帳' ) {
+                disabledColumn = worksheet.getColumn(colIndex + 1).letter;
+            }
+            if ( cell.value === '介助者' ) {
+                caregiverColumn = worksheet.getColumn(colIndex + 1).letter;
+            }
+            if ( cell.value === 'カード' ) {
+                cardColumn = worksheet.getColumn(colIndex + 1).letter;
+            }
         });
     });
 
@@ -55,6 +67,16 @@ const inputEntranceExcel = async (excelPath, sheetName, number, area) => {
     worksheet.getCell(`${ entranceTimeColumn }${ lastRowNumber + 1 }`).value = `${ hour }:${ minutes }` ;
     worksheet.getCell(`${ numberColumn }${ lastRowNumber + 1 }`).value = parseInt(number);
     worksheet.getCell(`${ areaColumn }${ lastRowNumber + 1 }`).value = '〇';
+
+    if ( disabled ) {
+        worksheet.getCell(`${ disabledColumn }${ lastRowNumber + 1 }`).value = '〇';
+    }
+    if ( caregiver ) {
+        worksheet.getCell(`${ caregiverColumn }${ lastRowNumber + 1 }`).value = '〇';
+    }
+    if ( card ) {
+        worksheet.getCell(`${ cardColumn }${ lastRowNumber + 1 }`).value = '〇';
+    }
 
     await workbook.xlsx.writeFile(excelPath);
 };

@@ -11,11 +11,11 @@ readForm.addEventListener('submit', (event) => {
             'Content-Type': 'application/json',
         },
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((data) => {
-        console.log(data);
         const tableContainer = document.getElementById('tableContainer');
-        tableContainer.innerHTML = data;
+        tableContainer.innerHTML = `<p>ビギナーエリア：${ data.beginner }</p><p>コンペエリア：${ data.compe }</p><p>リードエリア：${ data.lead }</p><p>スピードエリア：${ data.speed }</p><p>手帳：${ data.disabled }</p><p>介助者：${ data.caregiver }</p>`;
+        tableContainer.innerHTML += data.html;
     })
     .catch((error) => {
         console.error('エラー:', error);
@@ -28,20 +28,33 @@ entranceForm.addEventListener('submit', (event) => {
     const entranceInput = document.getElementById('entranceInput');
     const entranceValue = entranceInput.value;
     const entranceAreaValue = document.getElementById('entranceAreaInput').value;
+    const disabled = document.getElementById('disabled');
+    const caregiver = document.getElementById('caregiver');
+    const card = document.getElementById('card');
 
     fetch('/entrance', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ entrance: entranceValue, entranceArea: entranceAreaValue }),
+        body: JSON.stringify({ 
+            entrance: entranceValue, 
+            entranceArea: entranceAreaValue,
+            disabled: disabled.checked,
+            caregiver: caregiver.checked,
+            card: card.checked,
+        }),
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((data) => {
-        console.log(data);
         const tableContainer = document.getElementById('tableContainer');
-        tableContainer.innerHTML = data;
+        tableContainer.innerHTML = `<p>ビギナーエリア：${ data.beginner }</p><p>コンペエリア：${ data.compe }</p><p>リードエリア：${ data.lead }</p><p>スピードエリア：${ data.speed }</p><p>手帳：${ data.disabled }</p><p>介助者：${ data.caregiver }</p>`;
+        tableContainer.innerHTML += data.html;
+
         entranceInput.value = '';
+        disabled.checked = false;
+        caregiver.checked = false;
+        card.checked = false;
     })
     .catch((error) => {
         console.error('エラー:', error);
@@ -61,11 +74,12 @@ exitForm.addEventListener('submit', (event) => {
         },
         body: JSON.stringify({ exit: exitValue }),
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((data) => {
-        console.log(data);
         const tableContainer = document.getElementById('tableContainer');
-        tableContainer.innerHTML = data;
+        tableContainer.innerHTML = `<p>ビギナーエリア：${ data.beginner }</p><p>コンペエリア：${ data.compe }</p><p>リードエリア：${ data.lead }</p><p>スピードエリア：${ data.speed }</p><p>手帳：${ data.disabled }</p><p>介助者：${ data.caregiver }</p>`;
+        tableContainer.innerHTML += data.html;
+
         exitInput.value = '';
     })
     .catch((error) => {

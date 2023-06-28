@@ -31,13 +31,16 @@ app.post('/read', async (req, res) => {
 app.post('/entrance', async (req, res) => {
     const entrance = req.body.entrance;
     const entranceArea = req.body.entranceArea;
+    const disabled = req.body.disabled;
+    const caregiver = req.body.caregiver;
+    const card = req.body.card;
     try {
-        await inputEntranceExcel(excelPath, day, entrance, entranceArea);
-        const data = await readExcel(excelPath, listPath, day);
-        res.send(data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('An error occurred');
+        await inputEntranceExcel( excelPath, day, entrance, entranceArea, disabled, caregiver, card );
+        const data = await readExcel( excelPath, listPath, day );
+        res.send( data );
+    } catch ( error ) {
+        console.error( error );
+        res.status( 500 ).send( 'An error occurred' );
     }
 });
 
